@@ -20,8 +20,15 @@
     ],
     "require": {
         "php": ">=5.5.9",
-        "laravel/framework": "5.*",
-        "propel/propel": "~2.0.0-alpha5"
+        "laravel/framework": "8.*",
+        "propel/propel": "dev-master"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Propel\\PropelLaravel\\PropelIntegrationServiceProvider"
+            ]
+        }
     },
     "autoload": {
         "psr-4": {

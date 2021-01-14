@@ -125,7 +125,7 @@ class PropelIntegrationServiceProvider extends ServiceProvider
         }
 
         if (!$has_default_logger) {
-            $serviceContainer->setLogger('defaultLogger', \Log::getMonolog());
+            $serviceContainer->setLogger('defaultLogger', app()->log->getLogger());
         }
 
         Propel::setServiceContainer($serviceContainer);
