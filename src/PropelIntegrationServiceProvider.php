@@ -47,9 +47,20 @@ class PropelIntegrationServiceProvider extends ServiceProvider
 
             $command = (new ArgvInput())->getFirstArgument();
 
-            if ('propel:' === substr($command, 0, 7) && !is_file(base_path('config/propel.php'))) {
-                // config_path('propel.php') will work too untill config dir in app root
-                throw new PropelException('You MUST run "php ./artisan vendor:publish --provider '.__CLASS__.'" before use propel console commands ');
+            if ('propel:' === substr($command, 0, 7)) {
+                
+                if(!is_file(base_path('config/propel.php'))){
+                    // config_path('propel.php') will work too untill config dir in app root
+                    throw new PropelException('You MUST run "php ./artisan vendor:publish --provider '.__CLASS__.'" before use propel console commands ');
+                }
+                
+                // Propel offers no way to give configuration for its commands like it does for its runtime.
+                // Propel commands are coded to search for and read a file called "propel.php" for its config.
+                // That's a problem if Laravel has a cached config, because when the config is cached, Laravel doesn't load the env variables.
+                // That results in Propel reading config files that make env() calls which return incorrect values.
+                if(app()->configurationIsCached()){
+                    throw new PropelException("Propel cannot run commands while Laravel config is cached. Run: php artisan config:clear && php artisan $command && php artisan config:cache");
+                }
             }
         }
 
